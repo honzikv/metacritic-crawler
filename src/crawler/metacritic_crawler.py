@@ -3,7 +3,6 @@ import logging
 from typing import List
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
 
 from src.utils.metacritic_uri_builder import create_games_url
 from src.utils.request_utils import get_default_instance

@@ -5,6 +5,7 @@ from abc import abstractmethod
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 _logger = logging.getLogger(__name__)
 
@@ -46,9 +47,15 @@ class Crawler(abc.ABC):
         except NoSuchElementException:
             return None
 
-    def _get_element_as_string_by_xpath(self, xpath):
+    def _get_string_by_xpath(self, xpath):
         el = self._get_element_by_xpath(xpath)
         return el.text if el is not None else None
+
+    def _get_string_from_element_by_xpath(self, element: WebElement, xpath: str):
+        try:
+            return element.find_element_by_xpath(xpath).text
+        except NoSuchElementException:
+            return None
 
     def _get_last_page_no(self, default_page_no, xpath):
         # We have not processed the first page yet

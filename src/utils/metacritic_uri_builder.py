@@ -10,7 +10,7 @@ def create_games_url(year: int, page: int = 0):
     return f'{_GAME_RELEASE_URL}/filtered?year_selected={year}&sort=desc&view=detailed&page={page}'
 
 
-def create_game_review_page(base_url: str, page: int = 0): return base_url + f'?page={page}'
+def add_page_no_query(base_url: str, page: int = 0): return base_url + f'?page={page}'
 
 
 def create_absolute_game_url(relative_url: str): return f'{_METACRITIC_URL}/{relative_url}'

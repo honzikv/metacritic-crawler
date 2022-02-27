@@ -5,9 +5,9 @@ from src.crawler.crawler import Crawler
 from src.crawler.game_crawler import GameCrawler
 from src.utils.metacritic_uri_builder import create_absolute_game_url, add_page_no_query
 
-_max_page_xpath = "//li[contains(@class, 'page last_page')]//a[contains(@class, 'page_num')]/text()"
-_items_xpath = "//div[contains(@class, 'browse_list_wrapper')]//td[contains(@class, 'clamp-summary-wrap')]" \
-               "//a[contains(@class, 'title')]/@href"
+_max_page_xpath = "//li[contains(@class, 'page last_page')]//a[contains(@class, 'page_num')]"
+# //div[contains(@class, 'browse_list_wrapper')]//td[contains(@class, 'clamp-summary-wrap')]//a[contains(@class, 'title')]/@href
+_items_xpath = "//div[contains(@class, 'browse_list_wrapper')]//td[contains(@class, 'clamp-summary-wrap')]//a[contains(@class, 'title')]"
 
 _logger = logging.getLogger(__name__)
 
@@ -43,12 +43,22 @@ class YearCrawler(Crawler):
                     return items
 
             # Get all item urls in the page
-            item_urls = self._get_elements_by_xpath(_items_xpath)
+            item_url_els = self._get_elements_by_xpath(_items_xpath)
+            if len(item_url_els) == 0:
+                return
+
+            item_urls = []
+            for item_url_el in item_url_els:
+                link = item_url_el.get_attribute('href')
+                if link is None:
+                    continue
+
+                item_urls.append(link)
+
             _logger.debug(f'Found {len(item_urls)} item urls, attempting to scrape ...')
 
-            for relative_item_url in item_urls:
-                game_url = create_absolute_game_url(relative_item_url)
-                game_crawler = GameCrawler(self._webdriver, self._timer, game_url)
+            for item_url in item_urls:
+                game_crawler = GameCrawler(self._webdriver, self._timer, item_url)
                 item = game_crawler.crawl()
 
                 if item is not None:

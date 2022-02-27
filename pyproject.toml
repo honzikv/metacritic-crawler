@@ -8,6 +8,7 @@ authors = ["Vaclav Honzik <vaclavhonzik98@gmail.com>"]
 python = "^3.10"
 selenium = "^4.1.2"
 lxml = "^4.8.0"
+webdriver-manager = "^3.5.3"
 
 [tool.poetry.dev-dependencies]
 

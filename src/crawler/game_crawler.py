@@ -4,11 +4,11 @@ from src.crawler.crawler import Crawler
 from src.crawler.review_list_crawler import ReviewListCrawler
 from src.utils.metacritic_uri_builder import create_critic_reviews_url, create_user_reviews_url
 
-_name = "//div[contains(@class, 'product_title')]//a//h1/text()"
+_name = "//div[contains(@class, 'product_title')]//a//h1"
 _summary_details_publisher = "//div[contains(@class, 'product_data')]//ul[@class='summary_details']"
 _metacritic_rating = "//div[contains(@class, 'score_summary') and contains(@class, 'metascore_summary')]" \
-                     "//span[@itemprop='ratingValue']/text()"
-_user_rating = "//a[@class='metascore_anchor']//div[contains(@class, 'metascore_w') and contains(@class,'user')]/text()"
+                     "//span[@itemprop='ratingValue']"
+_user_rating = "//a[@class='metascore_anchor']//div[contains(@class, 'metascore_w') and contains(@class,'user')]"
 
 _logger = logging.getLogger(__name__)
 
@@ -24,8 +24,8 @@ _critic_reviews_xpaths = {
 _user_reviews_xpaths = {
     'review_list': "//ol[contains(@class, 'reviews') and contains(@class, 'user_reviews')]//li"
                    "//div[@class='review_content']",
-    'review_text': ".//span[contains(@class, 'blurb') and contains(@class, 'blurb_expanded')]",
-    'review_text_alt': "",
+    'review_text': ".//li[contains(@class, 'review') and contains(@class, 'user_review')]//div[@class='review_content']//div[@class='review_body']//span[contains(@class, 'blurb') and contains(@class, 'blurb_expanded')]",
+    'review_text_alt': ".//li[contains(@class, 'review') and contains(@class, 'user_review')]//div[@class='review_content']//div[@class='review_body']//span/",
     'reviewer_name': ".//div[@class='review_critic']//div[@class='name']//a",
     'date_reviewed': ".//div[@class='review_critic']//div[@class='date']",
     'score': ".//div[@class='review_grade']//div"

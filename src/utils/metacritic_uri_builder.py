@@ -1,7 +1,7 @@
 # Module for uri building
 
 _METACRITIC_URL = 'https://www.metacritic.com'
-_GAME_RELEASE_URL = f'{_METACRITIC_URL}/browse/games/score/metascore/year'
+_GAME_RELEASE_URL = f'{_METACRITIC_URL}/browse/games/score/metascore/year/pc'
 
 
 # Functions for url creation

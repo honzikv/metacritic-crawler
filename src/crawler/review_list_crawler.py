@@ -6,7 +6,7 @@ from src.utils.metacritic_uri_builder import add_page_no_query
 
 _logger = logging.getLogger(__name__)
 
-_max_page_xpath = "//ul[@class='pages']//li[contains(@class, 'page') and contains(@class, 'last_page')]//a/text()"
+_max_page_xpath = "//ul[@class='pages']//li[contains(@class, 'page') and contains(@class, 'last_page')]//a"
 
 
 class ReviewListCrawler(Crawler):
@@ -58,3 +58,7 @@ class ReviewListCrawler(Crawler):
                     continue
 
                 items.append(review)
+
+            current_page += 1
+
+        return items

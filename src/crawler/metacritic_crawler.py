@@ -1,5 +1,6 @@
 # Base crawling module
 import logging
+import os
 from typing import List
 
 from selenium import webdriver
@@ -12,18 +13,18 @@ from src.crawler.year_crawler import YearCrawler
 
 _logger = logging.getLogger(__name__)
 
-_webdriver_exe_path = '../../chromedriver.exe'
-_chrome_driver = webdriver.Chrome(_webdriver_exe_path)
-
 
 class MetacriticCrawler(Crawler):
     """
     Base crawler class that crawls entire metacritic.com for all games released between years passed in the constructor
     """
 
-    def __init__(self, crawl_years: List[int]):
-        super().__init__(_chrome_driver, get_default_instance())
+    def __init__(self, chrome_driver_path, crawl_years: List[int]):
+        super().__init__(webdriver.Chrome(executable_path=chrome_driver_path), get_default_instance())
         self.crawl_years = crawl_years
+
+    def __del__(self):
+        self._webdriver.quit()
 
     def crawl(self):
         store = {}
@@ -39,7 +40,7 @@ class MetacriticCrawler(Crawler):
 
         # Wait out the politeness timer if necessary
         if not super()._get_with_retries(current_url):
-            _logger.warning(f'Failed to crawl: {current_url}')
+            _logger.warning(f'Failed to crawl: {current_url}. Skipping ...')
             return []
 
         year_crawler = YearCrawler(self._webdriver, self._timer)

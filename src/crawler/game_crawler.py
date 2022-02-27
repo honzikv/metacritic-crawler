@@ -1,6 +1,7 @@
 import logging
 
 from src.crawler.crawler import Crawler
+from src.crawler.crawler_config import CrawlerConfig
 from src.crawler.review_list_crawler import ReviewListCrawler
 from src.utils.metacritic_uri_builder import create_critic_reviews_url, create_user_reviews_url
 
@@ -22,15 +23,15 @@ _critic_reviews_xpaths = {
 }
 
 _user_reviews_xpaths = {
-    'review_list': "//ol[contains(@class, 'reviews') and contains(@class, 'user_reviews')]//li"
-                   "//div[@class='review_content']",
-    'review_text': ".//li[contains(@class, 'review') and contains(@class, 'user_review')]//div[@class='review_content']//div[@class='review_body']//span[contains(@class, 'blurb') and contains(@class, 'blurb_expanded')]",
-    'review_text_alt': ".//li[contains(@class, 'review') and contains(@class, 'user_review')]//div[@class='review_content']//div[@class='review_body']//span/",
+    'review_list': "//ol[contains(@class, 'reviews') and contains(@class, 'user_reviews')]//li//div["
+                   "@class='review_content']",
+    'review_text': ".//div[@class='review_body']//span[contains(@class, 'blurb') and contains(@class, "
+                   "'blurb_expanded')]",
+    'review_text_alt': ".//div[@class='review_body']//span",
     'reviewer_name': ".//div[@class='review_critic']//div[@class='name']//a",
     'date_reviewed': ".//div[@class='review_critic']//div[@class='date']",
     'score': ".//div[@class='review_grade']//div"
 }
-
 
 
 class GameCrawler(Crawler):
@@ -38,10 +39,11 @@ class GameCrawler(Crawler):
     Used for crawling game info
     """
 
-    def __init__(self, webdriver, timer, url):
+    def __init__(self, webdriver, timer, url, crawler_config: CrawlerConfig):
         super().__init__(webdriver, timer)
         self._url = url
         self.result = {}
+        self.crawler_config = crawler_config
 
     def crawl(self):
         fetch_success = super()._get_with_retries(self._url)
@@ -65,7 +67,8 @@ class GameCrawler(Crawler):
         # Get all reviews
         critic_reviews_url = create_critic_reviews_url(self._url)
         critic_review_crawler = ReviewListCrawler(self._webdriver, self._timer, critic_reviews_url,
-                                                  _critic_reviews_xpaths)
+                                                  _critic_reviews_xpaths,
+                                                  self.crawler_config.max_critic_reviews_per_game)
         critic_reviews = critic_review_crawler.crawl()  # will return list of objects
 
         if critic_reviews is None:
@@ -73,7 +76,8 @@ class GameCrawler(Crawler):
         self.result['critic_reviews'] = critic_reviews
 
         user_reviews_url = create_user_reviews_url(self._url)
-        user_review_crawler = ReviewListCrawler(self._webdriver, self._timer, user_reviews_url, _user_reviews_xpaths)
+        user_review_crawler = ReviewListCrawler(self._webdriver, self._timer, user_reviews_url, _user_reviews_xpaths,
+                                                self.crawler_config.max_user_reviews_per_game)
         user_reviews = user_review_crawler.crawl()  # will return list of objects
 
         if user_reviews is None:

@@ -11,10 +11,11 @@ _max_page_xpath = "//ul[@class='pages']//li[contains(@class, 'page') and contain
 
 class ReviewListCrawler(Crawler):
 
-    def __init__(self, webdriver, timer, url, xpaths):
+    def __init__(self, webdriver, timer, url, xpaths, max_reviews):
         super().__init__(webdriver, timer)
         self._url = url
         self.xpaths = xpaths
+        self.max_reviews = max_reviews
 
     def crawl(self):
         fetch_success = super()._get_with_retries(self._url)
@@ -26,7 +27,7 @@ class ReviewListCrawler(Crawler):
         current_page = 0
 
         items = []
-        while not current_page > max_page:
+        while not current_page > max_page and len(items) < self.max_reviews:
             if max_page is math.inf:
                 max_page = super()._get_last_page_no(current_page, _max_page_xpath)
             else:
@@ -58,6 +59,8 @@ class ReviewListCrawler(Crawler):
                     continue
 
                 items.append(review)
+                if len(items) >= self.max_reviews:
+                    break
 
             current_page += 1
 

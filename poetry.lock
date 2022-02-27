@@ -131,6 +131,14 @@ htmlsoup = ["beautifulsoup4"]
 source = ["Cython (>=0.29.7)"]
 
 [[package]]
+name = "ndjson"
+version = "0.3.1"
+description = "JsonDecoder for ndjson"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "outcome"
 version = "1.1.0"
 description = "Capture the outcome of Python function calls."
@@ -296,7 +304,7 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "fc32ffa4daa54ac665558a9099dbdc127622e12a2ff13f891baf939b2ca152c0"
+content-hash = "79d660d7ccbf70f84c8593df1f5a8777aabea08a0f573964bc6eab21bd17e966"
 
 [metadata.files]
 async-generator = [
@@ -471,6 +479,10 @@ lxml = [
     {file = "lxml-4.8.0-pp38-pypy38_pp73-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_24_i686.whl", hash = "sha256:730766072fd5dcb219dd2b95c4c49752a54f00157f322bc6d71f7d2a31fecd79"},
     {file = "lxml-4.8.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:8b99ec73073b37f9ebe8caf399001848fced9c08064effdbfc4da2b5a8d07b93"},
     {file = "lxml-4.8.0.tar.gz", hash = "sha256:f63f62fc60e6228a4ca9abae28228f35e1bd3ce675013d1dfb828688d50c6e23"},
+]
+ndjson = [
+    {file = "ndjson-0.3.1-py2.py3-none-any.whl", hash = "sha256:839c22275e6baa3040077b83c005ac24199b94973309a8a1809be962c753a410"},
+    {file = "ndjson-0.3.1.tar.gz", hash = "sha256:bf9746cb6bb1cb53d172cda7f154c07c786d665ff28341e4e689b796b229e5d6"},
 ]
 outcome = [
     {file = "outcome-1.1.0-py2.py3-none-any.whl", hash = "sha256:c7dd9375cfd3c12db9801d080a3b63d4b0a261aa996c4c13152380587288d958"},

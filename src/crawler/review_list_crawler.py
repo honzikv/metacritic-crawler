@@ -1,6 +1,10 @@
 import logging
 import math
 
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
+
 from src.crawler.crawler import Crawler
 from src.utils.metacritic_uri_builder import add_page_no_query
 
@@ -11,11 +15,18 @@ _max_page_xpath = "//ul[@class='pages']//li[contains(@class, 'page') and contain
 
 class ReviewListCrawler(Crawler):
 
-    def __init__(self, webdriver, timer, url, xpaths, max_reviews):
+    def __init__(self, webdriver, timer, url, xpaths, max_reviews, has_expand_button=False):
         super().__init__(webdriver, timer)
         self._url = url
         self.xpaths = xpaths
         self.max_reviews = max_reviews
+        self.click_expand_button = has_expand_button
+
+    def _find_and_click_expand_button(self, element: WebElement, xpath: str):
+        try:
+            element.find_element(By.XPATH, xpath).click()
+        except (NoSuchElementException, WebDriverException):
+            return
 
     def crawl(self):
         fetch_success = super()._get_with_retries(self._url)
@@ -46,14 +57,20 @@ class ReviewListCrawler(Crawler):
                     'score': super()._get_string_from_element_by_xpath(review_el, self.xpaths['score'])
                 }
 
+                if self.click_expand_button:
+                    try:
+                        self._find_and_click_expand_button(review_el, self.xpaths['expand_button'])
+                    except Exception as e:
+                        _logger.error(f'An error has occurred: {str(e)}')
+
                 # the review text itself may be in two different tags in some cases so get one which is not None if any
                 review_text = super()._get_string_from_element_by_xpath(review_el, self.xpaths['review_text'])
                 review_text_alt = super()._get_string_from_element_by_xpath(
                     review_el, self.xpaths['review_text_alt']) if 'review_text_alt' in self.xpaths else None
 
-                if review_text is not None:
+                if review_text is not None and len(review_text) > 0:
                     review['text'] = review_text
-                elif review_text_alt is not None:
+                elif review_text_alt is not None and len(review_text_alt) > 0:
                     review['text'] = review_text_alt
                 else:
                     continue

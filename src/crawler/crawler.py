@@ -53,14 +53,12 @@ class Crawler(abc.ABC):
         try:
             return self._webdriver.find_elements(By.XPATH, xpath)
         except NoSuchElementException as e:
-            _logger.debug('Unable to get: ' + str(e))
             return []
 
     def _get_element_by_xpath(self, xpath):
         try:
             return self._webdriver.find_element(By.XPATH, xpath)
         except NoSuchElementException as e:
-            _logger.debug('Unable to get: ' + str(e))
             return None
 
     def _get_string_by_xpath(self, xpath):

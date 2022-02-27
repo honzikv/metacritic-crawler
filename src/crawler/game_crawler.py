@@ -30,7 +30,8 @@ _user_reviews_xpaths = {
     'review_text_alt': ".//div[@class='review_body']//span",
     'reviewer_name': ".//div[@class='review_critic']//div[@class='name']//a",
     'date_reviewed': ".//div[@class='review_critic']//div[@class='date']",
-    'score': ".//div[@class='review_grade']//div"
+    'score': ".//div[@class='review_grade']//div",
+    'expand_button': ".//span[contains(@class, 'toggle_expand_collapse') and contains(@class, 'toggle_expand')]"
 }
 
 
@@ -77,7 +78,7 @@ class GameCrawler(Crawler):
 
         user_reviews_url = create_user_reviews_url(self._url)
         user_review_crawler = ReviewListCrawler(self._webdriver, self._timer, user_reviews_url, _user_reviews_xpaths,
-                                                self.crawler_config.max_user_reviews_per_game)
+                                                self.crawler_config.max_user_reviews_per_game, True)
         user_reviews = user_review_crawler.crawl()  # will return list of objects
 
         if user_reviews is None:
